@@ -21,7 +21,7 @@ public class CrimeLab {
     }
   }
 
-  private static CrimeLab getInstance(Context context) {
+  public static CrimeLab getInstance(Context context) {
     if (sCrimeLab == null)
       sCrimeLab = new CrimeLab(context);
     return sCrimeLab;
