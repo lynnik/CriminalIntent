@@ -16,6 +16,8 @@ import java.util.List;
 
 public class CrimeListFragment extends Fragment {
 
+  private static final int REQUEST_CRIME = 1;
+
   private RecyclerView mCrimeRecyclerView;
   private CrimeAdapter mAdapter;
 
@@ -38,6 +40,13 @@ public class CrimeListFragment extends Fragment {
   public void onResume() {
     super.onResume();
     updateUI();
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (REQUEST_CRIME == requestCode) {
+
+    }
   }
 
   private void updateUI() {
