@@ -18,6 +18,7 @@ public class CrimeListFragment extends Fragment {
 
   private static final int REQUEST_CRIME = 1;
 
+  private int mCrimePosition;
   private RecyclerView mCrimeRecyclerView;
   private CrimeAdapter mAdapter;
 
@@ -57,13 +58,14 @@ public class CrimeListFragment extends Fragment {
       mAdapter = new CrimeAdapter(crimes);
       mCrimeRecyclerView.setAdapter(mAdapter);
     } else {
-      mAdapter.notifyDataSetChanged();
+      mAdapter.notifyItemChanged(mCrimePosition);
     }
   }
 
   private class CrimeHolder extends RecyclerView.ViewHolder
       implements View.OnClickListener {
 
+    private int mPosition;
     private Crime mCrime;
     private TextView mTitleTextView;
     private TextView mDateTextView;
@@ -81,7 +83,8 @@ public class CrimeListFragment extends Fragment {
           itemView.findViewById(R.id.list_item_crime_solved_check_box);
     }
 
-    public void bindCrime(Crime crime) {
+    public void bindCrime(int position, Crime crime) {
+      mPosition = position;
       mCrime = crime;
       mTitleTextView.setText(crime.getTitle());
       mDateTextView.setText(crime.getDate().toString());
@@ -90,6 +93,7 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
+      mCrimePosition = mPosition;
       Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
       startActivity(intent);
     }
@@ -113,7 +117,7 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onBindViewHolder(CrimeHolder holder, int position) {
       Crime crime = mCrimes.get(position);
-      holder.bindCrime(crime);
+      holder.bindCrime(position, crime);
     }
 
     @Override
