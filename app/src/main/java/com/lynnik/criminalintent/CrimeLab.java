@@ -40,4 +40,8 @@ public class CrimeLab {
     }
     return null;
   }
+
+  public boolean isEmpty() {
+    return mCrimes.size() == 0;
+  }
 }
