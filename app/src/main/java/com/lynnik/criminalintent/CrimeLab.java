@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
 import com.lynnik.criminalintent.database.CrimeBaseHelper;
 import com.lynnik.criminalintent.database.CrimeCursorWrapper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -109,5 +111,15 @@ public class CrimeLab {
   public boolean isEmpty() {
     CrimeCursorWrapper cursor = queryCrimes(null, null);
     return cursor.getCount() == 0;
+  }
+
+  public File getPhotoFile(Crime crime) {
+    File externalFileDir = mContext
+        .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+    if (externalFileDir == null)
+      return null;
+
+    return new File(externalFileDir, crime.getPhotoFilename());
   }
 }
