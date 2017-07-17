@@ -50,6 +50,11 @@ public class CrimeFragment extends Fragment {
   private Button mSuspectButton;
   private ImageButton mPhotoButton;
   private ImageView mPhotoView;
+  private Callbacks mCallbacks;
+
+  public interface Callbacks {
+    void onCrimeUpdated(Crime crime);
+  }
 
   public static CrimeFragment newInstance(UUID crimeId) {
     Bundle args = new Bundle();
@@ -58,6 +63,12 @@ public class CrimeFragment extends Fragment {
     CrimeFragment fragment = new CrimeFragment();
     fragment.setArguments(args);
     return fragment;
+  }
+
+  @Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    mCallbacks = (Callbacks) activity;
   }
 
   @Override
@@ -74,6 +85,12 @@ public class CrimeFragment extends Fragment {
     super.onPause();
 
     CrimeLab.getInstance(getActivity()).updateCrime(mCrime);
+  }
+
+  @Override
+  public void onDetach() {
+    super.onDetach();
+    mCallbacks = null;
   }
 
   @Nullable
@@ -97,6 +114,7 @@ public class CrimeFragment extends Fragment {
       public void onTextChanged(
           CharSequence charSequence, int i, int i1, int i2) {
         mCrime.setTitle(charSequence.toString());
+        updateCrime();
       }
 
       @Override
@@ -126,6 +144,7 @@ public class CrimeFragment extends Fragment {
           public void onCheckedChanged(
               CompoundButton compoundButton, boolean isChecked) {
             mCrime.setSolved(isChecked);
+            updateCrime();
           }
         });
 
@@ -211,6 +230,7 @@ public class CrimeFragment extends Fragment {
       Date date = (Date) data
           .getSerializableExtra(DatePickerFragment.EXTRA_DATE);
       mCrime.setDate(date);
+      updateCrime();
       updateDate();
     } else if (requestCode == REQUEST_CONTACT && data != null) {
       Uri contactUri = data.getData();
@@ -226,13 +246,20 @@ public class CrimeFragment extends Fragment {
         c.moveToFirst();
         String suspect = c.getString(0);
         mCrime.setSuspect(suspect);
+        updateCrime();
         mSuspectButton.setText(suspect);
       } finally {
         c.close();
       }
     } else if (requestCode == REQUEST_PHOTO) {
+      updateCrime();
       updatePhotoView();
     }
+  }
+
+  private void updateCrime() {
+    CrimeLab.getInstance(getActivity()).updateCrime(mCrime);
+    mCallbacks.onCrimeUpdated(mCrime);
   }
 
   public void returnResult() {
